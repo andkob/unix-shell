@@ -39,7 +39,7 @@ static T_words p_words() {
     return 0;
   T_words words=new_words();
   words->word=word;
-  if (cmp("|") || cmp("&") || cmp(";"))
+  if (cmp("|") || cmp("&") || cmp(";") || cmp("<") || cmp(">"))
     return words;
   words->words=p_words();
   return words;
@@ -52,6 +52,20 @@ static T_command p_command() {
     return 0;
   T_command command=new_command();
   command->words=words;
+  if (eat("<")) {
+    char *s=curr();
+    if (!s)
+      ERROR("missing filename for input redirection");
+    command->filein=strdup(s);
+    next();
+  }
+  if (eat(">")) {
+    char *s=curr();
+    if (!s)
+      ERROR("missing filename for output redirection");
+    command->fileout=strdup(s);
+    next();
+  }
   return command;
 }
 
@@ -118,6 +132,10 @@ static void f_command(T_command t) {
   if (!t)
     return;
   f_words(t->words);
+  if (t->filein)
+    free(t->filein);
+  if (t->fileout)
+    free(t->fileout);
   free(t);
 }
 

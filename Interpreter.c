@@ -16,7 +16,7 @@ static Command i_command(T_command t) {
     return 0;
   Command command=0;
   if (t->words)
-    command=newCommand(t->words);
+    command=newCommand(t->words,t->filein,t->fileout);
   return command;
 }
 
@@ -30,7 +30,8 @@ static void i_pipeline(T_pipeline t, Pipeline pipeline) {
 static void i_sequence(T_sequence t, Sequence sequence) {
   if (!t)
     return;
-  Pipeline pipeline=newPipeline(1);
+  int fg=!(t->op && strcmp(t->op,"&")==0);
+  Pipeline pipeline=newPipeline(fg);
   i_pipeline(t->pipeline,pipeline);
   addSequence(sequence,pipeline);
   i_sequence(t->sequence,sequence);
