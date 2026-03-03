@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <readline/history.h>
 
 #include "Command.h"
 #include "error.h"
@@ -43,17 +44,25 @@ BIDEFN(pwd) {
 
 BIDEFN(cd) {
   builtin_args(r,1);
-  if (strcmp(r->argv[1],"-")==0) {
-    char *twd=cwd;
-    cwd=owd;
-    owd=twd;
-  } else {
-    if (owd) free(owd);
-    owd=cwd;
-    cwd=strdup(r->argv[1]);
+  char *dir=r->argv[1];
+  if (strcmp(dir,"-")==0) {
+    if (!owd)
+      ERROR("cd: OLDPWD not set");
+    dir=owd;
   }
-  if (cwd && chdir(cwd))
+  if (chdir(dir))
     ERROR("chdir() failed"); // warn
+  if (owd) free(owd);
+  owd=cwd;
+  cwd=getcwd(0,0);
+}
+
+BIDEFN(history) {
+  builtin_args(r,0);
+  HIST_ENTRY **list=history_list();
+  if (list)
+    for (int i=0; list[i]; i++)
+      printf("%d: %s\n",i+history_base,list[i]->line);
 }
 
 static int builtin(BIARGS) {
@@ -65,6 +74,7 @@ static int builtin(BIARGS) {
     BIENTRY(exit),
     BIENTRY(pwd),
     BIENTRY(cd),
+    BIENTRY(history),
     {0,0}
   };
   int i;
