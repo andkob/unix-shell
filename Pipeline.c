@@ -34,13 +34,29 @@ extern int sizePipeline(Pipeline pipeline) {
 
 static void execute(Pipeline pipeline, Jobs jobs, int *jobbed, int *eof) {
   PipelineRep r=(PipelineRep)pipeline;
+  int n=sizePipeline(r);
   int pids[512];
   int npids=0;
-  for (int i=0; i<sizePipeline(r) && !*eof; i++) {
-    int pid=execCommand(deq_head_ith(r->processes,i),pipeline,jobs,jobbed,eof,r->fg);
+  int prevfd=-1;
+
+  for (int i=0; i<n && !*eof; i++) {
+    int pipefd[2]={-1,-1};
+    if (i<n-1) {
+      if (pipe(pipefd)==-1)
+        ERROR("pipe() failed");
+    }
+    int pid=execCommand(deq_head_ith(r->processes,i),pipeline,jobs,jobbed,eof,
+                        r->fg,prevfd,pipefd[1]);
+    if (prevfd>=0)
+      close(prevfd);
+    if (pipefd[1]>=0)
+      close(pipefd[1]);
     if (pid>0)
       pids[npids++]=pid;
+    prevfd=pipefd[0];
   }
+  if (prevfd>=0)
+    close(prevfd);
   if (r->fg)
     for (int i=0; i<npids; i++)
       waitpid(pids[i],NULL,0);

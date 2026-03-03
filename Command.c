@@ -124,7 +124,15 @@ static void redirect(CommandRep r) {
   }
 }
 
-static void child(CommandRep r, int fg) {
+static void child(CommandRep r, int fg, int pipein, int pipeout) {
+  if (pipein>=0) {
+    dup2(pipein,STDIN_FILENO);
+    close(pipein);
+  }
+  if (pipeout>=0) {
+    dup2(pipeout,STDOUT_FILENO);
+    close(pipeout);
+  }
   redirect(r);
   int eof=0;
   Jobs jobs=newJobs();
@@ -136,9 +144,9 @@ static void child(CommandRep r, int fg) {
 }
 
 extern int execCommand(Command command, Pipeline pipeline, Jobs jobs,
-		       int *jobbed, int *eof, int fg) {
+		       int *jobbed, int *eof, int fg, int pipein, int pipeout) {
   CommandRep r=command;
-  if (fg && builtin(r,eof,jobs))
+  if (fg && pipein<0 && pipeout<0 && builtin(r,eof,jobs))
     return 0;
   if (!*jobbed) {
     *jobbed=1;
@@ -148,7 +156,7 @@ extern int execCommand(Command command, Pipeline pipeline, Jobs jobs,
   if (pid==-1)
     ERROR("fork() failed");
   if (pid==0)
-    child(r,fg);
+    child(r,fg,pipein,pipeout);
   return pid;
 }
 
