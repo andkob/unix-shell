@@ -1,0 +1,2 @@
+echo redirected > /tmp/hw3_test_3a
+cat /tmp/hw3_test_3a

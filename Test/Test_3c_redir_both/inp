@@ -1,0 +1,2 @@
+tr a-z A-Z < /tmp/hw3_test_3c_in > /tmp/hw3_test_3c_out
+cat /tmp/hw3_test_3c_out

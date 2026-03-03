@@ -1,9 +1,70 @@
 #!/bin/bash
+#
+# Test suite for hw3 shell
+# Usage: Test/run [shell_binary]
+#
 
-prg=./try
+prg=${1:-./try}
+TIMEOUT=5
 
-for t in Test/Test_* ; do
-    echo ${t##*/}
-    $prg <$t/inp 2>&1 >$t/out
-    diff -q -w $t/exp $t/out 2>&1 >/dev/null || echo ${t##*/} failed >&2
+pass=0
+fail=0
+total=0
+last_step=""
+
+if [ ! -x "$prg" ]; then
+    echo "Error: $prg not found or not executable. Run 'make' first."
+    exit 1
+fi
+
+echo "Running tests with: $prg"
+echo "================================"
+
+for t in Test/Test_[0-9]* ; do
+    [ -d "$t" ] || continue
+
+    name=${t##*/}
+    step=${name:5:1}
+
+    # Print step header on transition
+    if [ "$step" != "$last_step" ]; then
+        [ -n "$last_step" ] && echo ""
+        case $step in
+            1) echo "--- Step 1: Simple Foreground Commands ---" ;;
+            2) echo "--- Step 2: Sequences of Commands ---" ;;
+            3) echo "--- Step 3: I/O Redirection ---" ;;
+            4) echo "--- Step 4: Background Commands ---" ;;
+            5) echo "--- Step 5: Pipelines ---" ;;
+            6) echo "--- Step 6: Builtin Commands ---" ;;
+        esac
+        last_step=$step
+    fi
+
+    total=$((total + 1))
+
+    # Run setup if present
+    [ -f "$t/setup" ] && bash "$t/setup"
+
+    # Run shell with timeout
+    timeout $TIMEOUT $prg < "$t/inp" > "$t/out" 2>/dev/null
+    rc=$?
+
+    # Run teardown if present
+    [ -f "$t/teardown" ] && bash "$t/teardown"
+
+    if [ $rc -eq 124 ]; then
+        echo "  FAIL: $name (timeout)"
+        fail=$((fail + 1))
+    elif diff -q -w "$t/exp" "$t/out" >/dev/null 2>&1; then
+        echo "  PASS: $name"
+        pass=$((pass + 1))
+    else
+        echo "  FAIL: $name"
+        diff -w "$t/exp" "$t/out" 2>/dev/null | head -5 | sed 's/^/         /'
+        fail=$((fail + 1))
+    fi
 done
+
+echo ""
+echo "================================"
+echo "Results: $pass/$total passed, $fail failed"

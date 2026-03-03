@@ -1,0 +1,1 @@
+echo hello | cat | tr a-z A-Z
