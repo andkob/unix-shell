@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <termios.h>
+#include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -26,6 +27,7 @@ int main() {
   }
   
   while (!eof) {
+    while (waitpid(-1,NULL,WNOHANG)>0);
     char *line=readline(prompt);
     if (!line)
       break;
