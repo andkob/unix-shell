@@ -1,4 +1,4 @@
-# Unix Shell
+# MelonShell
 
 A minimal Unix shell written in C, implementing command parsing and interpretation with support for sequences, pipelines, I/O redirection, background jobs, and several built-in commands.
 
@@ -41,7 +41,7 @@ redir    ::= ε | < word | > word | < word > word
 ## Building
 
 ```bash
-make          # builds the 'shell' executable and libdeq.so
+make          # builds the 'melonsh' executable and libdeq.so
 ```
 
 Requires GNU Readline (`-lreadline -lncurses`).
@@ -49,8 +49,8 @@ Requires GNU Readline (`-lreadline -lncurses`).
 ## Running
 
 ```bash
-./shell               # interactive mode (with prompt "$ ")
-./shell < commands.txt # batch/scripted mode
+./melonsh               # interactive mode (with prompt "$ ")
+./melonsh < commands.txt # batch/scripted mode
 ```
 
 ## Testing

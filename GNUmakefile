@@ -1,4 +1,4 @@
-prog=shell
+prog=melonsh
 objs=$(addsuffix .o,$(basename $(wildcard *.c)))
 
 defines=-D_GNU_SOURCE

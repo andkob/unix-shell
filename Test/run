@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Test suite for hw3 shell
+# Test suite for the shell
 # Usage: Test/run [shell_binary]
 #
 
-prg=${1:-./shell}
+prg=${1:-./melonsh}
 TIMEOUT=5
 
 pass=0
