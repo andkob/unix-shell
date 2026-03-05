@@ -33,10 +33,39 @@ struct T_word {
   char *s;
 };
 
+/**
+ * Allocate and zero-initialize a new T_sequence node.
+ *
+ * @return Pointer to a heap-allocated T_sequence.
+ */
 extern T_sequence new_sequence();
+
+/**
+ * Allocate and zero-initialize a new T_pipeline node.
+ *
+ * @return Pointer to a heap-allocated T_pipeline.
+ */
 extern T_pipeline new_pipeline();
+
+/**
+ * Allocate and zero-initialize a new T_command node.
+ *
+ * @return Pointer to a heap-allocated T_command.
+ */
 extern T_command  new_command();
+
+/**
+ * Allocate and zero-initialize a new T_words node.
+ *
+ * @return Pointer to a heap-allocated T_words.
+ */
 extern T_words    new_words();
+
+/**
+ * Allocate and zero-initialize a new T_word node.
+ *
+ * @return Pointer to a heap-allocated T_word.
+ */
 extern T_word     new_word();
 
 #endif
