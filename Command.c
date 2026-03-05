@@ -23,42 +23,48 @@ typedef struct {
 static char *owd=0;
 static char *cwd=0;
 
-static void builtin_args(CommandRep r, int n) {
+static int builtin_args(CommandRep r, int n) {
   char **argv=r->argv;
   for (n++; *argv++; n--);
-  if (n)
-    ERROR("wrong number of arguments to builtin command"); // warn
+  if (n) {
+    WARN("wrong number of arguments to builtin command");
+    return 0;
+  }
+  return 1;
 }
 
 BIDEFN(exit) {
-  builtin_args(r,0);
+  if (!builtin_args(r,0)) return;
   *eof=1;
 }
 
 BIDEFN(pwd) {
-  builtin_args(r,0);
+  if (!builtin_args(r,0)) return;
   if (!cwd)
     cwd=getcwd(0,0);
   printf("%s\n",cwd);
 }
 
 BIDEFN(cd) {
-  builtin_args(r,1);
+  if (!builtin_args(r,1)) return;
   char *dir=r->argv[1];
+  unsigned char fail_oldpwd = 0;
   if (strcmp(dir,"-")==0) {
-    if (!owd)
-      ERROR("cd: OLDPWD not set");
+    if (!owd) {
+      WARN("cd: OLDPWD not set");
+      fail_oldpwd = 1;
+    }
     dir=owd;
   }
-  if (chdir(dir))
-    ERROR("chdir() failed"); // warn
+  if (chdir(dir) && !fail_oldpwd)
+    ERROR("chdir() failed");
   if (owd) free(owd);
   owd=cwd;
   cwd=getcwd(0,0);
 }
 
 BIDEFN(history) {
-  builtin_args(r,0);
+  if (!builtin_args(r,0)) return;
   HIST_ENTRY **list=history_list();
   if (list)
     for (int i=0; list[i]; i++)
