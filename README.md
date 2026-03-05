@@ -1,5 +1,7 @@
 # MelonShell
 
+![logo](./img/melonsh.png)
+
 A minimal Unix shell written in C, implementing command parsing and interpretation with support for sequences, pipelines, I/O redirection, background jobs, and several built-in commands.
 
 ## Features
