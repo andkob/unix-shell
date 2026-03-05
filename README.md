@@ -14,6 +14,14 @@ A minimal Unix shell written in C, implementing command parsing and interpretati
 - **Built-in commands** — `cd`, `pwd`, `exit`, `history`
 - **Command history** — persisted in `.history` via GNU Readline
 
+## Startup Experience
+
+When launched interactively, MelonShell displays:
+
+1. **ASCII art banner** — randomly selected from 11 art files in `ascii/`
+2. **Time-of-day greeting** — "Good morning/afternoon/evening, \<user\>!"
+3. **System info panel** — date/time, user, host, kernel, arch, uptime, memory, CPU, color support
+
 ## Grammar
 
 ```
@@ -39,6 +47,7 @@ redir    ::= ε | < word | > word | < word > word
 | `Jobs.c / .h` | Background job tracking via a deque |
 | `deq.h` | Double-ended queue (shared library `libdeq.so`) |
 | `error.h` | Error-reporting macros |
+| `ascii/` | 11 ASCII art banner files (`1.txt`–`11.txt`), randomly displayed at startup |
 
 ## Building
 
