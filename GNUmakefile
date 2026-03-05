@@ -3,7 +3,7 @@ objs=$(addsuffix .o,$(basename $(wildcard *.c)))
 
 defines=-D_GNU_SOURCE
 ccflags=-g -Wall -MMD $(defines)
-ldflags=-g -lreadline -lncurses -L. -ldeq -Wl,-rpath=.
+ldflags=-g -lreadline -lncurses
 
 .SUFFIXES:
 
