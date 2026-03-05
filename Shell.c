@@ -45,6 +45,7 @@ int main() {
   } else {
     fclose(rl_outstream);
   }
+  freeJobs(jobs);
   freestateCommand();
   return 0;
 }

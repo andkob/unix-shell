@@ -22,3 +22,11 @@
    fun:add_history
    fun:main
 }
+{
+   Ncurses_termtype
+   Memcheck:Leak
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_read_termtype
+   ...
+}
