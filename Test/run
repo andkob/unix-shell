@@ -4,7 +4,7 @@
 # Usage: Test/run [shell_binary]
 #
 
-prg=${1:-./try}
+prg=${1:-./shell}
 TIMEOUT=5
 
 pass=0
