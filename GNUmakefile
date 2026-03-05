@@ -1,19 +1,25 @@
 prog=shell
+objs=$(addsuffix .o,$(basename $(wildcard *.c)))
 
-ldflags:=-lreadline -lncurses -L. -ldeq -Wl,-rpath=.
+defines=-D_GNU_SOURCE
+ccflags=-g -Wall -MMD $(defines)
+ldflags=-g -lreadline -lncurses -L. -ldeq -Wl,-rpath=.
 
-include ../GNUmakefile
+.SUFFIXES:
 
-try: $(objs) libdeq.so
-	gcc -o $@ $(objs) $(ldflags)
+%.o: %.c ; gcc -o $@ -c $< $(ccflags)
 
-trytest: try
-	Test/run
+$(prog): $(objs) ; gcc -o $@ $^ $(ldflags)
+
+.PHONY: clean run test valgrind
+
+clean: ; rm -f $(prog) *.o *.d *.i
+
+run: $(prog) ; ./$< $(args)
 
 test: $(prog)
 	Test/run
 
-.PHONY: valgrind
 valgrind: $(prog)
 	@for t in Test/Test_[0-9]*; do \
 		[ -d "$$t" ] || continue; \
@@ -24,3 +30,5 @@ valgrind: $(prog)
 			./$(prog) < "$$t/inp" 2>&1 | grep -v "^==.*==$$" | grep "^=="; \
 		echo ""; \
 	done
+
+sinclude *.d
