@@ -123,7 +123,7 @@ static void print_system_info(int use_color) {
   printf("  %s%sUptime%s    %s%ldd %ldh %ldm%s\n", BOLD, CYAN, RESET, GREEN, updays, uphours, upmins, RESET);
   printf("  %s%sMemory%s    %s%lu MB / %lu MB%s\n", BOLD, CYAN, RESET, GREEN, used_mb, total_mb, RESET);
   printf("  %s%sCPU%s       %s%s%s\n",    BOLD, CYAN, RESET, GREEN, cpu, RESET);
-  printf("  %s%sShell%s     %s%s%s\n",    BOLD, CYAN, RESET, GREEN, "custom (hw3)", RESET);
+  printf("  %s%sShell%s     %s%s%s\n",    BOLD, CYAN, RESET, GREEN, "melonsh", RESET);
   printf("  %s%sColors%s    %s%s%s\n",    BOLD, CYAN, RESET, GREEN, use_color ? "yes" : "no", RESET);
   printf("  %s%s────────────────────────────────%s\n", DIM, CYAN, RESET);
   printf("\n");
